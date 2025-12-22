@@ -19,7 +19,7 @@ app.get('/api/estado', (req, res) => {
 app.get('/api/news/total', async (req, res) => {
   try {
     console.error('para revisar');
-    const result = await db.query('select news_code, news_title_page, news_text from bsp_news where news_enable = TRUE order by news_code desc');
+    const result = await db.query('select news_code, news_title_page, news_image_01, news_text, news_publish_date from bsp_news where news_enable = TRUE order by news_code');
     res.json(result.rows);
   } catch (err) {
     console.error('Error al contar registros:', err);
