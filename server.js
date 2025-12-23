@@ -19,7 +19,7 @@ app.get('/api/estado', (req, res) => {
 app.get('/api/news/total', async (req, res) => {
   try {
     console.error('para revisar');
-    const result = await db.query('select news_code, news_title_page, news_image_01, news_text, news_publish_date from bsp_news where news_enable = TRUE order by news_code');
+    const result = await db.query('select news_code, news_image_type_01, news_title_page, news_image_01, news_base64_image_01, news_text, news_publish_date from bsp_news where news_enable = TRUE order by news_code');
     res.json(result.rows);
   } catch (err) {
     console.error('Error al contar registros:', err);
@@ -40,7 +40,7 @@ app.get('/api/news/:code', async (req, res) => {
   try {
     // Consulta segura usando parámetro preparado
     const result = await db.query(
-      'SELECT news_code, news_mini_title, news_title_page, news_subtitle_page, news_image_01, news_image_02, news_text, news_publish_date FROM bsp_news WHERE news_code = $1',
+      'SELECT news_code, news_mini_title, news_title_page, news_subtitle_page, news_image_type_01, news_image_01, news_base64_image_01, news_image_type_02, news_image_02, news_base64_image_02, news_text, news_publish_date FROM bsp_news WHERE news_code = $1',
       [code] // ← cadena "001", "002", etc.
     );
 
