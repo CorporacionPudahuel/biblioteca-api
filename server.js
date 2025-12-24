@@ -56,6 +56,32 @@ app.get('/api/news/:code', async (req, res) => {
   }
 });
 
+app.get('/api/zones/:code', async (req, res) => {
+  const { code } = req.params;
+
+  // Validación: solo permite códigos de 3 dígitos (000 a 999)
+  if (!/^\d{3}$/.test(code)) {
+    return res.status(400).json({ error: 'El código debe tener exactamente 3 dígitos numéricos (ej. "001")' });
+  }
+
+  try {
+    // Consulta segura usando parámetro preparado
+    const result = await db.query(
+      'SELECT zone_code WHERE zone_code = $1',
+      [code] // ← cadena "001", "002", etc.
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Recurso no encontrado' });
+    }
+
+    console.error('Devolvio valor : ' + result.rows[0].zone_code);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al buscar recurso por código:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 
 app.listen(PORT, () => {
