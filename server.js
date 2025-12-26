@@ -56,9 +56,29 @@ app.get('/api/news/:code', async (req, res) => {
   }
 });
 
+
+/**
+ * El siguiente método recupera todas las zonas que estén definidas como
+ * visibles
+ */
+app.get('/api/zones/all', async (req, res) => {
+  try {
+    console.error('Llegando al método');
+    const result = await db.query('select * from bsp_zones where zone_visibility = TRUE order by zone_order');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al contar registros de los espacios:', err);
+    res.status(500).json({ error: 'No se pudo obtener el total de espacios' });
+  }
+});
+
+
+
+
 app.get('/api/zones/:code', async (req, res) => {
   const { code } = req.params;
 
+  console.error(' ---->    Invoca el método para recuperar el registro exacto ' + [code]);
   // Validación: solo permite códigos de 3 dígitos (000 a 999)
   if (!/^\d{3}$/.test(code)) {
     return res.status(400).json({ error: 'El código debe tener exactamente 3 dígitos numéricos (ej. "001")' });
@@ -67,7 +87,7 @@ app.get('/api/zones/:code', async (req, res) => {
   try {
     // Consulta segura usando parámetro preparado
     const result = await db.query(
-      'SELECT zone_code WHERE zone_code = $1',
+      'SELECT ZONE_TITLE, ZONE_HTML_DESCRIPTION, ZONE_IMAGE_SRC, ZONE_IMAGE_BASE64, ZONE_VECTOR_SRC, ZONE_VECTOR_BASE64 FROM BSP_ZONES WHERE ZONE_CODE = $1',
       [code] // ← cadena "001", "002", etc.
     );
 
